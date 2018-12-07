@@ -1,0 +1,154 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>homework5</title>
+</head>
+
+<body>
+
+
+    <script type="text/javascript">
+
+        // 封装AJAX
+        function ajax(opt) {
+            opt = opt || {};
+            var type = opt.type || "GET";
+            type = type.toUpperCase() || "GET";
+            var url = opt.url;
+            var data = opt.data || null;
+            var success = opt.success || function () { };
+            var error = opt.error || function () { };
+            var xml = null;
+
+            if (window.XMLHttpRequest) {
+                xml = new XMLHttpRequest();
+            }
+            else {
+                xml = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+
+
+            if (type === "POST") {
+                xml.open(type, url, true);
+                xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+                xml.send(data);
+            }
+            else {
+                xml.open(type, url + data, true);
+                xml.send();
+            }
+
+            xml.onreadystatechange = function () {
+                if (xml.readyState == 4) {
+                    if (xml.status == 200) {
+                        var result = xml.responseText;
+                        result = JSON.parse(result);
+                        success(result);
+                    }
+                    else{
+                        error(xml.status);
+                    }
+                }
+            }
+        }
+
+        var i = 0, j = 0, k = 0;
+        function readafter() {
+            i++;
+            ajax({
+                type: "GET",
+                url: "https://api.tumiv.com/v2/cqupt/student",
+                data: "?year=2015&page=" + i,
+                success: function (responseData) {
+                    if (i <= 10) {
+                        var big = document.getElementById("information");
+                        document.getElementById("page").innerHTML = "第" + i + "页";
+                        for (k = big.childNodes.length - 1; k >= 0; k--) {
+                            big.removeChild(big.childNodes[k]);
+                        }
+                        for (j = 0; j < responseData.result.length; j++) {
+                            var classNum = document.createElement("a");
+                            var gender = document.createElement("a");
+                            var major = document.createElement("a");
+                            var name = document.createElement("a");
+                            var stNum = document.createElement("a");
+                            classNum.innerHTML = "班级:"+responseData.result[j].class_num + "<br>";
+                            gender.innerHTML = "性别:"+responseData.result[j].gender + "<br>";
+                            major.innerHTML = "专业:"+responseData.result[j].major + "<br>";
+                            name.innerHTML = "姓名:"+responseData.result[j].name + "<br>";
+                            stNum.innerHTML = "学号:"+responseData.result[j].student_num + "<br><br>";
+                            big.appendChild(classNum);
+                            big.appendChild(gender);
+                            big.appendChild(major);
+                            big.appendChild(name);
+                            big.appendChild(stNum);
+                        }
+
+                    }
+                    else {
+                        alert("当前是最后一页");
+                    }
+                },
+                error: function (responseData) {
+                    alert("连接超时");
+                }
+            });
+
+        }
+
+        function readbefore() {
+            i--;
+            ajax({
+                type: "GET",
+                url: "https://api.tumiv.com/v2/cqupt/student",
+                data: "?year=2015&page=" + i,
+                success: function (responseData) {
+                    if (i >= 1) {
+                        var big = document.getElementById("information");
+                        for (k = big.childNodes.length - 1; k >= 0; k--) {
+                            big.removeChild(big.childNodes[k]);
+                        }
+                        for (j = 0; j < responseData.result.length; j++) {
+                            var classNum = document.createElement("a");
+                            var gender = document.createElement("a");
+                            var major = document.createElement("a");
+                            var name = document.createElement("a");
+                            var stNum = document.createElement("a");
+                            classNum.innerHTML = "班级:" + responseData.result[j].class_num + "<br>";
+                            gender.innerHTML = "性别:" + responseData.result[j].gender + "<br>";
+                            major.innerHTML = "专业:" + responseData.result[j].major + "<br>";
+                            name.innerHTML = "姓名:" + responseData.result[j].name + "<br>";
+                            stNum.innerHTML = "学号:" + responseData.result[j].student_num + "<br><br>";
+                            big.appendChild(classNum);
+                            big.appendChild(gender);
+                            big.appendChild(major);
+                            big.appendChild(name);
+                            big.appendChild(stNum);
+                        }
+                        document.getElementById("page").innerHTML = "第" + i + "页";
+                    }
+                    else {
+                        alert("当前是第一页");
+                    }
+                },
+                error: function (responseData) {
+                    alert("连接超时");
+                }
+            });
+
+        }
+
+
+
+    </script>
+
+    <button type="button" onclick="readbefore()" style="background: #edd1d8">上一页</button>
+    <button type="button" onclick="readafter()" style="background: #edd1d8">下一页</button>
+    <div id="page" style="color: #48c0a3;"></div>
+    <div id="information" style="color: #cb3a56"></div>
+
+</body>
+
+
+</html>
