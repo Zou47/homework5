@@ -1,15 +1,11 @@
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title>homework5</title>
 </head>
 
 <body>
-
-
     <script type="text/javascript">
-
         // 封装AJAX
         function ajax(opt) {
             opt = opt || {};
@@ -28,7 +24,6 @@
                 xml = new ActiveXObject("Microsoft.XMLHTTP");
             }
 
-
             if (type === "POST") {
                 xml.open(type, url, true);
                 xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -43,7 +38,9 @@
                 if (xml.readyState == 4) {
                     if (xml.status == 200) {
                         var result = xml.responseText;
+                        
                         result = JSON.parse(result);
+                        
                         success(result);
                     }
                     else{
@@ -54,6 +51,7 @@
         }
 
         var i = 0, j = 0, k = 0;
+        
         function readafter() {
             i++;
             ajax({
@@ -63,6 +61,7 @@
                 success: function (responseData) {
                     if (i <= 10) {
                         var big = document.getElementById("information");
+                        
                         document.getElementById("page").innerHTML = "第" + i + "页";
                         for (k = big.childNodes.length - 1; k >= 0; k--) {
                             big.removeChild(big.childNodes[k]);
@@ -73,6 +72,7 @@
                             var major = document.createElement("a");
                             var name = document.createElement("a");
                             var stNum = document.createElement("a");
+                            
                             classNum.innerHTML = "班级:"+responseData.result[j].class_num + "<br>";
                             gender.innerHTML = "性别:"+responseData.result[j].gender + "<br>";
                             major.innerHTML = "专业:"+responseData.result[j].major + "<br>";
@@ -84,7 +84,6 @@
                             big.appendChild(name);
                             big.appendChild(stNum);
                         }
-
                     }
                     else {
                         alert("当前是最后一页");
@@ -94,7 +93,6 @@
                     alert("连接超时");
                 }
             });
-
         }
 
         function readbefore() {
@@ -106,6 +104,7 @@
                 success: function (responseData) {
                     if (i >= 1) {
                         var big = document.getElementById("information");
+                        
                         for (k = big.childNodes.length - 1; k >= 0; k--) {
                             big.removeChild(big.childNodes[k]);
                         }
@@ -115,6 +114,7 @@
                             var major = document.createElement("a");
                             var name = document.createElement("a");
                             var stNum = document.createElement("a");
+                            
                             classNum.innerHTML = "班级:" + responseData.result[j].class_num + "<br>";
                             gender.innerHTML = "性别:" + responseData.result[j].gender + "<br>";
                             major.innerHTML = "专业:" + responseData.result[j].major + "<br>";
